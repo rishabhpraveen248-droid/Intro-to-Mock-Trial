@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>so you got a mock trial role</title>
+<style>
+  :root {
+    --ink: #232017;
+    --muted: #6e6657;
+    --line: #ddd6c4;
+    --bg: #faf7f0;
+    --panel: #fffdf8;
+    --accent: #7a3b2e;
+    --accent2: #34543f;
+    --accent-soft: #f1e7d8;
+    --serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+    --sans: Verdana, Geneva, 'Trebuchet MS', sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.65;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(0,0,0,0.025) 1px, transparent 0);
+    background-size: 22px 22px;
+  }
+  a { color: var(--accent); text-decoration: underline; text-decoration-color: rgba(122,59,46,0.35); }
+  a:hover { text-decoration-color: var(--accent); }
+
+  .layout {
+    display: flex;
+    min-height: 100vh;
+    max-width: 1240px;
+    margin: 0 auto;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 245px;
+    flex-shrink: 0;
+    background: var(--panel);
+    border-right: 1px dashed var(--line);
+    padding: 26px 16px 26px 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .brand-box { padding: 0 16px 0 22px; }
+  .brand {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 2px;
+    letter-spacing: 0.1px;
+    transform: rotate(-0.3deg);
+  }
+  .brand-sub {
+    font-size: 10.5px;
+    color: var(--muted);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .scribble {
+    width: 130px;
+    height: 6px;
+    margin-bottom: 18px;
+  }
+  .search-wrap {
+    position: relative;
+    margin-bottom: 22px;
+    padding: 0 16px 0 22px;
+  }
+  .search-input {
+    width: 100%;
+    padding: 8px 11px 8px 28px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-size: 12.5px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+  }
+  .search-input::placeholder { color: #a39a85; }
+  .search-input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .search-icon {
+    position: absolute;
+    left: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: var(--muted);
+    pointer-events: none;
+  }
+  .search-results {
+    margin-top: 7px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--panel);
+    max-height: 320px;
+    overflow-y: auto;
+    display: none;
+    box-shadow: 2px 3px 0 rgba(0,0,0,0.04);
+  }
+  .search-results.show { display: block; }
+  .search-result-item {
+    padding: 8px 10px;
+    font-size: 12px;
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+  }
+  .search-result-item:last-child { border-bottom: none; }
+  .search-result-item:hover { background: var(--accent-soft); }
+  .search-result-section {
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 2px;
+    font-family: var(--serif);
+  }
+  .search-result-snippet {
+    color: var(--muted);
+    display: block;
+  }
+  .search-no-results {
+    padding: 10px;
+    font-size: 12px;
+    color: var(--muted);
+    font-style: italic;
+  }
+  mark {
+    background: #f3d597;
+    color: var(--ink);
+    padding: 0 1px;
+  }
+
+  .nav-group { margin-bottom: 4px; padding: 0 8px 0 14px; }
+  .nav-label {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--muted);
+    margin: 20px 0 7px 22px;
+    font-weight: bold;
+  }
+  .nav-item {
+    display: block;
+    padding: 7px 12px;
+    border-radius: 4px;
+    color: var(--ink);
+    font-size: 13px;
+    cursor: pointer;
+    margin-bottom: 1px;
+    border-left: 2px solid transparent;
+  }
+  .nav-item:hover { background: var(--accent-soft); text-decoration: none; }
+  .nav-item.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 700;
+    border-left: 2px solid var(--accent);
+  }
+
+  /* Main content */
+  .main {
+    flex: 1;
+    padding: 50px 60px 100px;
+    max-width: 850px;
+  }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .page-kicker {
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  h1.page-title {
+    font-family: var(--serif);
+    font-size: 36px;
+    margin: 0 0 8px;
+    color: var(--ink);
+    line-height: 1.15;
+  }
+  .page-subtitle {
+    font-size: 15px;
+    color: #494334;
+    margin-bottom: 8px;
+    max-width: 600px;
+  }
+  .meta-line {
+    font-size: 11.5px;
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 38px;
+  }
+
+  h2.section-h {
+    font-family: var(--serif);
+    font-size: 23px;
+    margin: 42px 0 16px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--line);
+    color: var(--ink);
+  }
+  h2.section-h:first-of-type { border-top: none; padding-top: 0; margin-top: 4px; }
+  h3.sub-h {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 24px 0 10px;
+    color: var(--accent);
+    font-family: var(--serif);
+  }
+  p { margin: 0 0 14px; font-size: 15px; color: #2b2718; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; font-size: 15px; }
+  li { margin-bottom: 7px; }
+  strong { color: #1c1a10; }
+
+  .callout {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-radius: 3px;
+    padding: 15px 18px;
+    margin: 18px 0;
+    position: relative;
+  }
+  .callout.alt { border-left-color: var(--accent2); }
+  .callout-label {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 9px;
+  }
+  .callout.alt .callout-label { color: var(--accent2); }
+  .script-line {
+    font-style: italic;
+    color: var(--ink);
+    margin-bottom: 9px;
+    font-family: var(--serif);
+    font-size: 14.5px;
+  }
+  .script-block p:last-child { margin-bottom: 0; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 26px;
+    font-size: 13px;
+  }
+  th, td {
+    border: 1px solid var(--line);
+    padding: 9px 11px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: var(--accent-soft);
+    font-weight: 700;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--accent);
+  }
+  tr:nth-child(even) td { background: #f5f1e6; }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 13px;
+    margin: 26px 0;
+  }
+  .role-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: transform 0.12s, box-shadow 0.12s;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.025);
+  }
+  .role-card:nth-child(odd) { transform: rotate(-0.2deg); }
+  .role-card:nth-child(even) { transform: rotate(0.25deg); }
+  .role-card:hover {
+    box-shadow: 3px 4px 0 rgba(122,59,46,0.12);
+    transform: translateY(-1px) rotate(0deg);
+  }
+  .role-card-title {
+    font-family: var(--serif);
+    font-size: 16.5px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+  .role-card-desc {
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  .dos-donts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 16px 0;
+  }
+  .do-box, .dont-box {
+    border-radius: 5px;
+    padding: 14px 16px;
+    font-size: 13px;
+  }
+  .do-box { background: #eef0e6; border: 1px solid #c9d2bb; }
+  .dont-box { background: #f2e6e1; border: 1px solid #ddc0b6; }
+  .do-box .label { color: #3d5c33; }
+  .dont-box .label { color: #8a4632; }
+  .label { font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; display: block; }
+  .do-box ul, .dont-box ul { padding-left: 18px; margin: 0; }
+  .do-box li, .dont-box li { margin-bottom: 5px; font-size: 13px; }
+
+  .quote-block {
+    border-left: 2px solid var(--line);
+    padding-left: 16px;
+    margin: 16px 0;
+    color: #56503f;
+    font-style: italic;
+    font-size: 13.5px;
+    font-family: var(--serif);
+  }
+
+  .example-box {
+    background: #f6f2e6;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 17px 20px;
+    margin: 18px 0;
+  }
+  .example-box .ex-title {
+    font-weight: 700;
+    font-size: 11.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+  }
+  .qa { margin-bottom: 6px; font-size: 14px; }
+  .qa .q { font-weight: 700; }
+
+  .handnote {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--accent);
+    font-size: 13.5px;
+    margin: -4px 0 20px;
+  }
+
+  .footer-note {
+    margin-top: 64px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--line);
+    font-size: 12px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  @media (max-width: 880px) {
+    .sidebar { display: none; }
+    .main { padding: 30px 22px 60px; max-width: 100%; }
+    .card-grid, .dos-donts { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="brand-box">
+      <div class="brand">so you got a role</div>
+      <div class="brand-sub">mock trial cheat sheet</div>
+      <svg class="scribble" viewBox="0 0 130 6"><path d="M2 4 Q 30 0, 60 4 T 128 3" stroke="#7a3b2e" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+    </div>
+
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input type="text" class="search-input" id="searchInput" placeholder="look something up...">
+      <div class="search-results" id="searchResults"></div>
+    </div>
+
+    <div class="nav-group">
+      <a class="nav-item active" data-page="home">start here</a>
+    </div>
+
+    <div class="nav-label">courtroom roles</div>
+    <div class="nav-group">
+      <a class="nav-item" data-page="bailiff">bailiff</a>
+      <a class="nav-item" data-page="timeclerk">time clerk</a>
+    </div>
+
+    <div class="nav-label">attorney stuff</div>
+    <div class="nav-group">
+      <a class="nav-item" data-page="openings">openings</a>
+      <a class="nav-item" data-page="direct">direct exam</a>
+      <a class="nav-item" data-page="cross">cross exam</a>
+      <a class="nav-item" data-page="closings">closings</a>
+    </div>
+
+    <div class="nav-label">witness stuff</div>
+    <div class="nav-group">
+      <a class="nav-item" data-page="witness">witness coaching</a>
+    </div>
+
+    <div class="nav-label">when you're stuck</div>
+    <div class="nav-group">
+      <a class="nav-item" data-page="objections">objections</a>
+      <a class="nav-item" data-page="impeachment">impeachment</a>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- HOME -->
+    <section class="page active" id="page-home">
+      <div class="page-kicker">read this first</div>
+      <h1 class="page-title">okay, so you got a role</h1>
+      <p class="page-subtitle">This is the cheat sheet our team wishes we'd had freshman year — bailiff and clerk scripts, attorney techniques, witness coaching, and an objections list you can actually find things in. Pick your role below, or just search for whatever you're panicking about.</p>
+      <p class="handnote">— compiled from years of team notes, scrimmage debriefs, and a couple of UCLA institute slides we kept coming back to</p>
+
+      <h2 class="section-h">find your role</h2>
+      <div class="card-grid">
+        <div class="role-card" data-page="bailiff">
+          <div class="role-card-title">Bailiff</div>
+          <div class="role-card-desc">oaths, calling the court to order, and not breaking character for two hours straight</div>
+        </div>
+        <div class="role-card" data-page="timeclerk">
+          <div class="role-card-title">Time Clerk</div>
+          <div class="role-card-desc">two stopwatches, mental math, and never faking the clock (you will get caught)</div>
+        </div>
+        <div class="role-card" data-page="openings">
+          <div class="role-card-title">Openings</div>
+          <div class="role-card-desc">theme, structure, and how to sound passionate without sounding like you're arguing</div>
+        </div>
+        <div class="role-card" data-page="direct">
+          <div class="role-card-title">Direct Exam</div>
+          <div class="role-card-desc">open-ended questions, looping, and letting your witness actually shine</div>
+        </div>
+        <div class="role-card" data-page="cross">
+          <div class="role-card-title">Cross Exam</div>
+          <div class="role-card-desc">the ten commandments, witness control, and knowing when to sit down</div>
+        </div>
+        <div class="role-card" data-page="closings">
+          <div class="role-card-title">Closings</div>
+          <div class="role-card-desc">actually arguing, rhetorical tricks, and finishing with a bang</div>
+        </div>
+        <div class="role-card" data-page="witness">
+          <div class="role-card-title">Witness Coaching</div>
+          <div class="role-card-desc">character, credibility, and surviving a brutal cross with your dignity intact</div>
+        </div>
+        <div class="role-card" data-page="objections">
+          <div class="role-card-title">Objections</div>
+          <div class="role-card-desc">the full cheat sheet — when to make 'em, when not to, how to respond</div>
+        </div>
+      </div>
+
+      <div class="footer-note">made by people who have definitely forgotten the bailiff oath mid-trial before. use freely, edit freely.</div>
+    </section>
+
+    <!-- BAILIFF -->
+    <section class="page" id="page-bailiff">
+      <div class="page-kicker">courtroom role</div>
+      <h1 class="page-title">Bailiff</h1>
+      <p class="page-subtitle">Easy to overlook, easy points to lose if you do. The bailiff keeps order, swears in witnesses, and basically acts as the judge's right hand for the round.</p>
+      <p class="meta-line">read this twice before your first round — the oath gets way easier after rep #2</p>
+
+      <h2 class="section-h">your main jobs</h2>
+      <h3 class="sub-h">swearing in witnesses</h3>
+      <p>Do this loudly, clearly, confidently — you'll be repeating it a lot, so get comfortable with it early. When an attorney calls a witness:</p>
+      <div class="callout">
+        <div class="callout-label">say this</div>
+        <div class="script-block">
+          <p class="script-line">"May &lt;witness full name&gt; please approach the witness stand."</p>
+        </div>
+      </div>
+      <p>Learn everyone's full name and how to pronounce it ahead of time — fumbling a name here is an easy way to look unprepared.</p>
+
+      <h3 class="sub-h">introducing yourself to the judge</h3>
+      <p>Get the judge's last name <em>before</em> the trial starts. Don't skip this — you need it for the "court is now in session" line.</p>
+      <div class="callout">
+        <div class="callout-label">say this</div>
+        <div class="script-block">
+          <p class="script-line">"Good evening your honor, my name is &lt;name&gt; and I will be the courtroom's bailiff today..."</p>
+          <p class="script-line">"Is the presiding Judge present?"</p>
+          <p class="script-line">"How should I refer to your honor?"</p>
+          <p class="script-line">"Will your honor let me know when to call the court to order?"</p>
+        </div>
+      </div>
+
+      <h3 class="sub-h">calling the court to order</h3>
+      <p>Once the judge gives you the nod that trial is starting:</p>
+      <div class="callout">
+        <div class="callout-label">say this</div>
+        <div class="script-block">
+          <p class="script-line">"All rise! Superior Court of the State of California, County of ______ (Alameda) Department ______ (room name), is now in session. The Honorable Judge ___________ presiding. Please be seated and come to order. Please turn off all cell phones and refrain from talking."</p>
+        </div>
+      </div>
+
+      <h3 class="sub-h">the witness oath</h3>
+      <div class="callout">
+        <div class="callout-label">say this</div>
+        <div class="script-block">
+          <p class="script-line">"Do you solemnly affirm that the testimony you are about to give will faithfully and truthfully conform to the facts and rules of the Mock Trial competition?"</p>
+          <p>(once they say yes)</p>
+          <p class="script-line">"Please state your name for the record, spelling your last."</p>
+        </div>
+      </div>
+
+      <h3 class="sub-h">keeper of the rules</h3>
+      <p>Real-court rules and mock trial rules aren't the same thing, and judges don't always know that. Bring a copy of the <strong>Rules of Competition</strong> with you — if a dispute comes up and the judge needs to check something, that's your job to hand over.</p>
+
+      <h2 class="section-h">stuff that actually matters for your score</h2>
+      <ul>
+        <li><strong>practice the oath until it's boring</strong> — you want it to sound natural by the time you're in front of real judges</li>
+        <li><strong>stand up straight, don't fidget</strong> — your body language is being watched even when you're not talking</li>
+        <li><strong>"your honor," always</strong> — and get witness honorifics and pronouns right (Mr., Ms./Mrs., Dr.)</li>
+        <li><strong>team up with the time clerk</strong> — you'll be solving little procedural hiccups together all round</li>
+        <li><strong>zero favoritism, zero face</strong> — no reactions no matter who's winning. you're not on a team right now, you're the court</li>
+        <li><strong>do not, under any circumstance, coach</strong> — no signals, no notes, no hints to your own team. this gets teams disqualified</li>
+        <li><strong>stay in character the whole time</strong> — you're scored start to finish, not just during your two scripted moments</li>
+      </ul>
+
+      <div class="callout alt">
+        <div class="callout-label">the actual point</div>
+        <p style="margin-bottom:0;">Nobody remembers a flawless bailiff. Everyone remembers a bad one. Be invisible-in-a-good-way and you're doing it right.</p>
+      </div>
+    </section>
+
+    <!-- TIME CLERK -->
+    <section class="page" id="page-timeclerk">
+      <div class="page-kicker">courtroom role</div>
+      <h1 class="page-title">Time Clerk</h1>
+      <p class="page-subtitle">Every chunk of the trial is timed, and you're the one keeping it honest. Bring your mental math — no calculators or phones at most county comps.</p>
+
+      <h2 class="section-h">what you're actually doing</h2>
+      <h3 class="sub-h">tracking the clock</h3>
+      <p>You're timing openings, closings, direct/cross, and pretrial motions. Rules differ between scrimmages and county comps, so double check beforehand.</p>
+      <p>You'll usually run two stopwatches — one for the current segment, one for a team's remaining total in a category (like all of their witness testimony combined).</p>
+
+      <h3 class="sub-h">when to pause</h3>
+      <ul>
+        <li>someone objects</li>
+        <li>the judge asks a question mid-motion</li>
+        <li>a direct/cross/opening/closing wraps up</li>
+        <li>a witness is getting sworn in</li>
+        <li>a time check is happening</li>
+      </ul>
+      <div class="callout">
+        <div class="callout-label">don't mess this up</div>
+        <p style="margin-bottom:0;">Never pause the clock unless the judge explicitly tells you to.</p>
+      </div>
+
+      <h3 class="sub-h">warning the teams</h3>
+      <p>Hold up cards for 2 minutes, 1 minute, 30 seconds, and STOP.</p>
+      <div class="callout">
+        <div class="callout-label">don't mess this up</div>
+        <p style="margin-bottom:0;">You can only say something out loud at 30 seconds and STOP. Everything else is visual only.</p>
+      </div>
+
+      <h3 class="sub-h">time checks</h3>
+      <p>Teams can ask how much time they have left at any point. Do the subtraction in your head, then say it out loud — clearly, confidently, no hesitation.</p>
+
+      <h3 class="sub-h">the official sheet</h3>
+      <p>You're logging every speaker's time. A judge, the scorers, and someone from the opposing team will all double check it — and they're allowed to photograph it.</p>
+
+      <h2 class="section-h">stuff that actually matters for your score</h2>
+      <ul>
+        <li><strong>be accurate, period</strong> — small errors get noticed and they cost points</li>
+        <li><strong>don't zone out</strong> — some segments need active pausing, and missing one looks bad</li>
+        <li><strong>hold the cards steady</strong> — no waving, no shaking, no faces</li>
+        <li><strong>stay completely neutral</strong> — no cheering, no wincing, no reacting to anything that happens</li>
+        <li><strong>never fudge the clock</strong> — not for your team, not against the other one. you will get caught and it's not worth it</li>
+        <li><strong>stay in character</strong> — this role is scored too, treat it like it matters (it does)</li>
+      </ul>
+
+      <div class="callout alt">
+        <div class="callout-label">the actual point</div>
+        <p style="margin-bottom:0;">A clean, fair time clerk makes both teams trust the round. That trust is worth more than people think.</p>
+      </div>
+    </section>
+
+    <!-- OPENINGS -->
+    <section class="page" id="page-openings">
+      <div class="page-kicker">attorney skill</div>
+      <h1 class="page-title">Opening Statements</h1>
+      <p class="page-subtitle">This is your first impression, and first impressions stick — most judges land pretty close to their final score within the first couple minutes of opening.</p>
+
+      <h2 class="section-h">theme and theory</h2>
+      <p>Your <strong>theory of the case</strong> is your version of what actually happened — it has to be logical, fit the law, and feel like common sense.</p>
+      <p>Your <strong>theme</strong> is the one phrase the judges remember when everything else blurs together. Keep it to 3–4 themes max. Good places to steal from: literature, old sayings, religious texts.</p>
+      <div class="example-box">
+        <div class="ex-title">themes that have worked</div>
+        <ul style="margin-bottom:0;">
+          <li>"This is a case about taking chances."</li>
+          <li>"Everything that happened here happened because of greed."</li>
+          <li>"It's not business, it's bias."</li>
+        </ul>
+      </div>
+
+      <h3 class="sub-h">two ways to start</h3>
+      <div class="quote-block">"This is a case about a ruthless murder. You are here because on April 25, 1995, the Defendant took a handgun, pointed it at the temple of the victim, and shot her, murdering her in cold blood."</div>
+      <div class="quote-block">"On April 25, 1995, my client was placed in a situation where he had a split second to decide whether he was going to defend himself or become a victim... This is a case about how my client preserved the most precious thing he has: his life."</div>
+
+      <h2 class="section-h">the shape of an opening</h2>
+      <ol>
+        <li><strong>dramatic opener</strong> — your theme, right away. don't lead with a date</li>
+        <li><strong>tell the story</strong> — chronological, or witness by witness</li>
+        <li><strong>preview your witnesses</strong> — if you went the witness-by-witness route</li>
+        <li><strong>burden of proof, briefly</strong> — save the legal deep-dive for closing</li>
+        <li><strong>land it</strong> — bring the theme back, ask for the verdict</li>
+      </ol>
+
+      <h2 class="section-h">labels matter more than you'd think</h2>
+      <p>Pick your words and stick to them all trial. Humanize your side, depersonalize theirs. Never say "my client."</p>
+      <table>
+        <tr><th>plaintiff's side</th><th>defendant's side</th></tr>
+        <tr><td>Ms. Smith (plaintiff)</td><td>Frank Johnson (defendant)</td></tr>
+        <tr><td>that defendant</td><td>the plaintiff</td></tr>
+        <tr><td>defendant's two-ton truck</td><td>our delivery van</td></tr>
+        <tr><td>crash / collision</td><td>accident / incident</td></tr>
+        <tr><td>shattered arm</td><td>the injury</td></tr>
+      </table>
+
+      <h2 class="section-h">words to lean on, words to drop</h2>
+      <div class="dos-donts">
+        <div class="do-box">
+          <span class="label">lean on</span>
+          <ul>
+            <li>"the evidence will show," "you will hear"</li>
+            <li>sensory, specific storytelling</li>
+            <li>naming + explaining every witness the first time they come up</li>
+            <li>owning a weakness before they bring it up</li>
+            <li>asking for a specific verdict at the end</li>
+          </ul>
+        </div>
+        <div class="dont-box">
+          <span class="label">drop</span>
+          <ul>
+            <li>"I believe," "I think"</li>
+            <li>loaded words like "racing," "loose cannon"</li>
+            <li>long legal explanations (save it for closing)</li>
+            <li>overselling the evidence</li>
+            <li>repeating your theme so much it goes stale</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 class="sub-h">arguing without sounding like you're arguing</h3>
+      <div class="example-box">
+        <div class="ex-title">don't say this</div>
+        <p>"Common sense tells you that the defendant couldn't have done what she claims she did the day she shot the victim."</p>
+        <div class="ex-title">say this instead</div>
+        <p style="margin-bottom:0;">"The defendant will try to convince you that she managed, somehow, to wrestle the gun away from her 250-lb. attacker and use it in self-defense. Throughout this case we will ask you to consider whether this is reasonable, ladies and gentlemen."</p>
+      </div>
+
+      <h2 class="section-h">a few tools worth stealing</h2>
+      <table>
+        <tr><th>device</th><th>example</th></tr>
+        <tr><td>triplets</td><td>"Took away his wife, took away his contract, took away his dignity."</td></tr>
+        <tr><td>alliteration</td><td>"Despondent, defeated, and determined to strike back."</td></tr>
+        <tr><td>metaphor</td><td>"The kidnapping was like a living nightmare."</td></tr>
+        <tr><td>parallelism</td><td>"The good news is the police found evidence. The bad news is that it was contaminated."</td></tr>
+      </table>
+
+      <h2 class="section-h">delivery</h2>
+      <ul>
+        <li>confident, sincere, a little emotional where it fits</li>
+        <li>good posture — no pockets, no leaning, weight centered</li>
+        <li>vary your pace, plan your transitions (verbal and physical)</li>
+        <li>look at both judges if you can, but don't stare anyone down</li>
+        <li>end with real conviction, then a beat of silence before you sit</li>
+      </ul>
+
+      <h2 class="section-h">a real example (age discrimination, civil)</h2>
+      <div class="example-box">
+        <div class="ex-title">plaintiff opener — theme: "it's not business, it's bias"</div>
+        <p>Today, we're going to learn about how Riley Winter, a journalist at TBD, was fired. Not because he was a bad journalist, not because of poor performance, not because he couldn't keep up with changing times — but because of his age.</p>
+        <p style="margin-bottom:0;">Remember: insults and jokes about age are just as much discrimination as insults about race, religion, or gender. Because the decision to fire Mr. Winter wasn't about business — it was about bias.</p>
+      </div>
+    </section>
+
+    <!-- DIRECT -->
+    <section class="page" id="page-direct">
+      <div class="page-kicker">attorney skill</div>
+      <h1 class="page-title">Direct Examination</h1>
+      <p class="page-subtitle">Direct is where your witness gets to tell their story. Your job is mostly to stay out of the way and ask the right questions in the right order.</p>
+
+      <h2 class="section-h">the basics</h2>
+      <table>
+        <tr><th>technique</th><th>what it actually means</th></tr>
+        <tr><td>open-ended questions</td><td>let them talk — the opposite of cross</td></tr>
+        <tr><td>headers</td><td>tell the jury where the exam is headed next before you go there</td></tr>
+        <tr><td>looping</td><td>pull the key word from their last answer into your next question</td></tr>
+        <tr><td>stay engaged</td><td>nod, look interested, don't pace around</td></tr>
+        <tr><td>purposeful movement</td><td>only move when you're transitioning topics</td></tr>
+      </table>
+
+      <h3 class="sub-h">headers in action</h3>
+      <div class="quote-block">"Now, I'd like to talk to you about the contract that was offered..."</div>
+
+      <h3 class="sub-h">looping in action</h3>
+      <div class="quote-block">Witness: "...and that's when I saw the knife." <br>Instead of "what happened next" → "What did you do once you saw the knife?"</div>
+
+      <h2 class="section-h">building your witness</h2>
+      <h3 class="sub-h">the three questions every juror has</h3>
+      <p><em>Who is she? Why is she here? Why should I believe her?</em> Hit all three early, without dragging.</p>
+
+      <h3 class="sub-h">keep it chronological</h3>
+      <p>People follow a story way better when it happens in the order it actually happened.</p>
+
+      <h3 class="sub-h">put them in the scene</h3>
+      <div class="quote-block">"Mr. Hill, let's see what you see as you're going southbound on Main Street. As you look out your windshield, what do you see in your lane of traffic in front of you?"</div>
+
+      <h3 class="sub-h">word choice is doing more than you think</h3>
+      <p>"How fast" gets a different answer than "how slowly." "Smashed" lands differently than "struck." Cut the jargon — plain English beats "police talk" every time.</p>
+
+      <h3 class="sub-h">bring up the bad stuff yourself</h3>
+      <p>If your witness has a weakness — bias, a shaky memory, whatever — get ahead of it on direct, where you control how it's framed. Don't let cross be the first place the jury hears it.</p>
+
+      <h2 class="section-h">if your witness is an expert</h2>
+      <ol>
+        <li>qualify them — education, training, experience</li>
+        <li>establish the basis — what facts/data they used</li>
+        <li>get the opinion/conclusion</li>
+        <li>explain it — be a teacher, not a wall of jargon</li>
+        <li>end strong</li>
+      </ol>
+
+      <h2 class="section-h">example: expert direct</h2>
+      <div class="example-box">
+        <div class="ex-title">PTSD diagnosis, excerpt</div>
+        <div class="qa"><span class="q">Q: Could you explain what PTSD is?</span></div>
+        <p>A: It's a set of chronic mental problems that occur after a traumatic event. Instead of symptoms subsiding, they persist and become more severe.</p>
+        <div class="qa"><span class="q">Q: Is it possible to get PTSD from losing your job?</span></div>
+        <p style="margin-bottom:0;">A: Absolutely. It's not limited to war veterans or crime victims. After working one job for so long, people adopt it as their source of identity — losing it unexpectedly can mirror losing a loved one.</p>
+      </div>
+
+      <h2 class="section-h">example: lay witness direct</h2>
+      <div class="example-box">
+        <div class="ex-title">Riley Winter direct, excerpt</div>
+        <div class="qa"><span class="q">Q: How well did you adapt to these changes?</span></div>
+        <p style="margin-bottom:0;">A: Things were different, but I quickly came around. I changed my writing style — I asked the company to sponsor social media training, researched clickbait-worthy titles, even called my niece to keep me current on hashtags and tweets.</p>
+      </div>
+    </section>
+
+    <!-- CROSS -->
+    <section class="page" id="page-cross">
+      <div class="page-kicker">attorney skill</div>
+      <h1 class="page-title">Cross Examination</h1>
+      <p class="page-subtitle">This is the combative part — and the fun part. Pick one goal per witness and don't muddy it.</p>
+
+      <h2 class="section-h">what cross is actually for</h2>
+      <ul>
+        <li>going after the witness's credibility (bias, money, motive)</li>
+        <li>going after the story's credibility</li>
+        <li>pulling out testimony that helps you</li>
+        <li>getting them to contradict another witness</li>
+        <li>setting up an exhibit you want admitted later</li>
+      </ul>
+
+      <h2 class="section-h">the core moves</h2>
+      <table>
+        <tr><th>move</th><th>why it works</th></tr>
+        <tr><td>leading questions</td><td>you're telling the story, they're just confirming it</td></tr>
+        <tr><td>keep the spotlight on you</td><td>unlike direct, cross is the attorney's show</td></tr>
+        <tr><td>short, simple questions</td><td>harder to wiggle out of, easier for judges to follow</td></tr>
+        <tr><td>looping</td><td>works here too — repeat their own bad answer back at them</td></tr>
+        <tr><td>don't try to cover everything</td><td>two or three sharp points beat ten dull ones</td></tr>
+      </table>
+
+      <h2 class="section-h">the ten commandments (yes, really ten)</h2>
+      <ol>
+        <li><strong>never more than three points</strong> — two is better, one is best. unmemorable = unpersuasive</li>
+        <li><strong>short questions, plain words</strong> — split compound questions in two</li>
+        <li><strong>never ask a non-leading question</strong> — you're singing the melody, they're humming along</li>
+        <li><strong>only ask what you already know the answer to</strong> — unless you genuinely don't care what they say</li>
+        <li><strong>actually listen</strong> — don't get so locked into your script that you miss a gift</li>
+        <li><strong>don't argue with the witness</strong> — save the fight for closing</li>
+        <li><strong>never let them repeat direct testimony</strong> — the third time they hear it, jurors believe it</li>
+        <li><strong>don't let them explain anything</strong></li>
+        <li><strong>stop one question early, not one question late</strong> — let closing connect the dots</li>
+        <li><strong>it's fine if the jury doesn't get it yet</strong> — that's what closing is for</li>
+      </ol>
+
+      <h2 class="section-h">a few more rules of thumb</h2>
+      <ul>
+        <li>start and end on your strongest points</li>
+        <li>don't just re-run the direct exam</li>
+        <li>get in and out — long crosses lose steam</li>
+        <li>bread-crumb questions, bit by bit</li>
+      </ul>
+
+      <h3 class="sub-h">when the witness fights you</h3>
+      <div class="example-box">
+        <div class="ex-title">don't cut them off — control them instead</div>
+        <div class="qa"><span class="q">Q: You were standing on the corner at that time, right?</span></div>
+        <p>A: I was right on the corner. That's when the big Buick came charging through the intersection.</p>
+        <p style="margin-bottom:0;">Q: Mr. Williams, we'll get to the Buick in a minute. Right now my question is, you were standing on the corner?</p>
+      </div>
+      <p>Cutting witnesses off makes you look like you're hiding something. Just calmly repeat the question — the jury notices who's playing fair.</p>
+
+      <h3 class="sub-h">should you even impeach?</h3>
+      <ul>
+        <li>did the testimony actually hurt you, or are you just annoyed</li>
+        <li>is the contradiction clean, or are you reaching</li>
+        <li>is it material, or just a nitpick</li>
+        <li>do you have the affidavit page ready to go</li>
+      </ul>
+      <div class="callout">
+        <div class="callout-label">honest coaching note</div>
+        <p style="margin-bottom:0;">Most impeachments in mock trial aren't necessary. Only do it if the witness is dead wrong and dead to rights — impeachment by omission almost never lands well. Ask yourself: would you risk your whole cross score on this?</p>
+      </div>
+
+      <h2 class="section-h">controlling a witness who won't behave</h2>
+      <p>Escalate slowly, don't jump straight to angry:</p>
+      <ol>
+        <li>"Is that a 'yes' to my question?"</li>
+        <li>"So that's a 'yes'..." (repeat the question)</li>
+        <li>"That wasn't my question, sir. Yes or no..."</li>
+        <li>"Sir, I asked you about X, you told me about Y. I'll ask again..."</li>
+        <li>"Please limit your answers to a yes or no when possible."</li>
+        <li>Beyond that — move to strike, ask the judge to step in.</li>
+      </ol>
+      <p>One California-specific note: judges here are generally receptive to non-responsive objections, so you can lean on the judge a bit earlier than you might in other regions.</p>
+
+      <h2 class="section-h">presentation</h2>
+      <div class="dos-donts">
+        <div class="do-box">
+          <span class="label">do</span>
+          <ul>
+            <li>deliver questions like facts, not with a question-mark lilt</li>
+            <li>keep your eyes on the witness, glance at the judge occasionally</li>
+            <li>act like you're winning even when a bad answer drops</li>
+            <li>know when to sit — don't ride a good cross into a flat one</li>
+          </ul>
+        </div>
+        <div class="dont-box">
+          <span class="label">don't</span>
+          <ul>
+            <li>interrupt the witness</li>
+            <li>ask anything you don't already know the answer to</li>
+            <li>sit down right after a sustained objection</li>
+            <li>blur your points together — pause between them</li>
+          </ul>
+        </div>
+      </div>
+
+      <h2 class="section-h">a few flashier tricks</h2>
+      <table>
+        <tr><th>trick</th><th>what it does</th></tr>
+        <tr><td>the "65"</td><td>repeat their slip-up back to them, incredulous, so the jury hears it twice</td></tr>
+        <tr><td>preemption</td><td>answer several anticipated questions in one breath to kill their rhythm</td></tr>
+        <tr><td>"I'm looking for a number"</td><td>force a hard number that exposes a gap ("how many questions did you ask him? ...zero.")</td></tr>
+        <tr><td>reverse leading</td><td>lead them toward an answer you know is false, to expose what they didn't do</td></tr>
+        <tr><td>drop the buffer</td><td>cut the "...correct?" so your damning phrase is the last thing they hear</td></tr>
+        <tr><td>drop the mic</td><td>end on your best, least-escapable point. don't scurry back to your seat — let it sit</td></tr>
+      </table>
+
+      <h2 class="section-h">a real cross excerpt</h2>
+      <div class="example-box">
+        <div class="ex-title">Shaw cross, age discrimination case</div>
+        <p style="margin-bottom:0;">A few days earlier, on December 20th, you offered a job to a new writer, didn't you? His name was Landon Greene. He was 27 years old, correct? Now the next day, December 23rd — that's the day you fired Mr. Winter, yes or no? So in less than 72 hours, you had fired a fifty-year-old writer and hired a 27-year-old one. Yes or no?</p>
+      </div>
+    </section>
+
+    <!-- CLOSINGS -->
+    <section class="page" id="page-closings">
+      <div class="page-kicker">attorney skill</div>
+      <h1 class="page-title">Closing Arguments</h1>
+      <p class="page-subtitle">This is where you take everything that happened today and argue what it means. Not summarize — argue.</p>
+
+      <h2 class="section-h">what closing is for</h2>
+      <ul>
+        <li>last shot at framing the facts and impressions you want them to remember</li>
+        <li>explaining why the evidence supports your theory</li>
+        <li>talking through inferences, credibility, and plain common sense</li>
+        <li>tying the law to the facts</li>
+        <li>asking, clearly, for the verdict you want</li>
+      </ul>
+
+      <h2 class="section-h">structure</h2>
+      <ol>
+        <li><strong>strong opener</strong> — bring the theme back immediately. a lot of judges have basically scored you by minute two</li>
+        <li><strong>tell the story</strong> — organized by legal elements, or witness by witness</li>
+        <li><strong>the unscripted part</strong> — reference what actually happened in this specific round</li>
+        <li><strong>law + elements</strong> — and whether they were met</li>
+        <li><strong>strong closer</strong> — theme again, ask for the verdict</li>
+      </ol>
+
+      <h2 class="section-h">rule one: actually argue</h2>
+      <p>"Witness 1 said this, Witness 2 said this, find him guilty" isn't an argument, it's a recap. Take the testimony and explain how it proves your elements — or how the other side failed to prove theirs.</p>
+      <div class="callout">
+        <div class="callout-label">don't forget</div>
+        <p style="margin-bottom:0;">"I think" and "I believe" are weak and arguably improper. Cut them from your closing vocabulary entirely.</p>
+      </div>
+
+      <h2 class="section-h">tools that actually land</h2>
+      <ul>
+        <li><strong>rhetorical questions</strong> — "Would a reasonable hospital release a patient they know to be mentally ill? Of course not!" (and answer it)</li>
+        <li><strong>triplets</strong> — "Rushed past the physical evidence, rushed past alternate suspects, rushed past motive."</li>
+        <li><strong>short analogies</strong> — "If you find a maggot in your food, you throw it all away. The prosecution wants you to ignore the maggot and eat the rest of the plate anyway."</li>
+        <li><strong>quote their own witnesses</strong> — it lands harder than quoting yours</li>
+        <li><strong>flip their theme back on them</strong></li>
+      </ul>
+
+      <h2 class="section-h">a couple smart moves</h2>
+      <h3 class="sub-h">get ahead of their best argument</h3>
+      <div class="quote-block">"It's true that nobody saw the defendant kidnap Bailey Reynolds. However, the rare drug found in her car matches the drug found in Bailey's bed — the exact place she was taken from. There's no other reasonable explanation for this coincidence."</div>
+
+      <h3 class="sub-h">call out broken promises</h3>
+      <p>If the other side promised something in opening that never showed up in the evidence — say so. It tells the judges you were actually paying attention all round.</p>
+
+      <h3 class="sub-h">leave them with something</h3>
+      <div class="example-box">
+        <div class="ex-title">"finish with a bang" — real example</div>
+        <p style="margin-bottom:0;">"Every time we asked the lead Detective a difficult question his answer was, 'we don't know.' Well, ladies and gentlemen, we don't know, after we don't know, after we don't know, does NOT equal proof beyond a reasonable doubt. So why are we here? We... don't... know."</p>
+      </div>
+
+      <h2 class="section-h">rebuttal (plaintiff only)</h2>
+      <ul>
+        <li>cover your real arguments in the main closing — don't save your best stuff and hope rebuttal saves you</li>
+        <li>save enough time so it doesn't feel rushed</li>
+        <li>don't just play defense against their closing — hit your own points fresh</li>
+      </ul>
+
+      <h2 class="section-h">a real closing excerpt</h2>
+      <div class="example-box">
+        <div class="ex-title">plaintiff closing, age discrimination</div>
+        <p style="margin-bottom:0;">If someone made these comments about race, sexuality, or gender, we'd be enraged. We don't feel that way about age — but the law doesn't see a difference. Sawyer Shaw made the decision to fire Riley Winter because of his age. Now it's your decision to hold her accountable. Find TBD Inc. liable.</p>
+      </div>
+    </section>
+
+    <!-- WITNESS -->
+    <section class="page" id="page-witness">
+      <div class="page-kicker">witness skill</div>
+      <h1 class="page-title">Witness Coaching</h1>
+      <p class="page-subtitle">You get scored twice — once on direct, once on cross. Nail direct and a tough cross won't sink you. Bomb direct and nothing recovers it.</p>
+
+      <h2 class="section-h">scoring well on direct comes down to three things</h2>
+      <h3 class="sub-h">1. having a character, period</h3>
+      <ul>
+        <li><strong>look the part</strong> before you say a word — clothes and posture set up the character</li>
+        <li><strong>your first 2–3 answers decide it</strong> — if judges can't tell who you are by then, it's an uphill climb</li>
+        <li><strong>sound like your character</strong> — word choice, pacing, energy, all of it</li>
+        <li>stay in character from the second judges walk in, not just while you're on the stand</li>
+      </ul>
+
+      <h3 class="sub-h">2. credibility</h3>
+      <ul>
+        <li><strong>sound sure of yourself</strong> — hesitation reads as dishonesty even when it isn't</li>
+        <li><strong>own your bias instead of hiding it</strong> — hiding it just makes it worse when it surfaces</li>
+        <li><strong>know your affidavit cold</strong> — stick to what's in it and what's reasonably inferable from it</li>
+      </ul>
+
+      <h3 class="sub-h">3. presentation</h3>
+      <ul>
+        <li>look at the attorney when they ask, drift back to the judges as you answer</li>
+        <li>vary your pace — slow enough that judges can actually follow you</li>
+        <li>kill the nervous habits — no swivel chair, no stuttering, no hands near your mouth</li>
+      </ul>
+
+      <h2 class="section-h">surviving cross</h2>
+      <p>You're not trying to win the case here — you're trying to outscore whoever's crossing you, or at worst tie them.</p>
+      <ul>
+        <li><strong>don't fight what you can't win</strong> — "yes, but..." kills your credibility fast</li>
+        <li><strong>stay confident even when it's brutal</strong> — looking rattled is worse than the bad answer itself</li>
+        <li><strong>keep the same energy as your direct</strong> — a personality shift reads as fake</li>
+        <li><strong>slow them down</strong> — a pause before answering disrupts their rhythm</li>
+        <li><strong>see the next question coming</strong> — sometimes answering it early deflates their whole point</li>
+        <li><strong>size up the crosser</strong> — play it safe against a strong one, have a little fun with a weak one</li>
+      </ul>
+
+      <h2 class="section-h">if you're up against a weak crosser</h2>
+      <ul>
+        <li>make them rephrase a sloppy question</li>
+        <li>"clarify" with a longer, favorable explanation</li>
+        <li>dare them to impeach if the affidavit's vague — they'll usually back off</li>
+        <li>punish open-ended questions ("how," "why") with a thorough answer that works for you</li>
+      </ul>
+
+      <h2 class="section-h">a few signature moves</h2>
+      <table>
+        <tr><th>move</th><th>how it works</th></tr>
+        <tr><td>the flat no</td><td>imprecise question? just say "no," no explanation. let them flounder finding their mistake</td></tr>
+        <tr><td>the yes sandwich</td><td>yes — short favorable explanation — yes. hard to object to as non-responsive</td></tr>
+        <tr><td>the "not exactly"</td><td>forces them to let you explain. use it once, maybe twice a round, not more</td></tr>
+        <tr><td>the pauline</td><td>"it wasn't said quite like that" — leans on tone or word choice to wriggle out. best for lay/character witnesses</td></tr>
+        <tr><td>half-concession</td><td>"sure," "you could say that," "I guess" — concede gracefully before they go for impeachment</td></tr>
+      </table>
+
+      <h2 class="section-h">five words to never say on cross</h2>
+      <ol>
+        <li>"but" — sounds defensive instantly</li>
+        <li>"like I said" — same problem</li>
+        <li>"mmhmm"</li>
+        <li>"nuh-uh"</li>
+        <li>"uh-huh" — always use real words on the record</li>
+      </ol>
+
+      <h2 class="section-h">be a good actor</h2>
+      <p>Every cross eventually lands a real hit on you. When it does — poker face. React, then speak, like a trained actor would. If you don't make anything of the bad answer, neither will the jury.</p>
+    </section>
+
+    <!-- OBJECTIONS -->
+    <section class="page" id="page-objections">
+      <div class="page-kicker">when you're stuck</div>
+      <h1 class="page-title">Objections &amp; Evidence</h1>
+      <p class="page-subtitle">The cheat sheet you actually want open during a scrimmage — when to object, how to phrase it, and how to respond when it's used against you.</p>
+
+      <h2 class="section-h">say it right</h2>
+      <table>
+        <tr><th>situation</th><th>phrase</th></tr>
+        <tr><td>objecting to a question</td><td>"Objection, Your Honor..."</td></tr>
+        <tr><td>objecting to an answer already given</td><td>"Your Honor, I move to strike the testimony as..."</td></tr>
+      </table>
+      <p><strong>note:</strong> only move to strike if it was the witness's answer that caused the problem — not if you already objected to the question itself.</p>
+
+      <h2 class="section-h">form of the question</h2>
+      <table>
+        <tr><th>objection</th><th>when</th><th>fix / response</th></tr>
+        <tr><td>leading</td><td>direct examiner is suggesting the answer</td><td>rephrase</td></tr>
+        <tr><td>compound</td><td>two questions stuffed into one</td><td>split it in two</td></tr>
+        <tr><td>asked and answered</td><td>hammering the same point repeatedly</td><td>rephrase or move on</td></tr>
+        <tr><td>argumentative</td><td>badgering, interrupting, unnecessary commentary</td><td>"attorney must ordinarily restrict questions to those calculated to elicit facts"</td></tr>
+        <tr><td>calls for a narrative</td><td>question invites a sprawling answer</td><td>rephrase into something specific</td></tr>
+        <tr><td>vague/ambiguous</td><td>witness genuinely can't tell what's being asked</td><td>rephrase</td></tr>
+        <tr><td>non-responsive</td><td>witness dodged the question</td><td>generally hard to fight back on</td></tr>
+        <tr><td>beyond the scope of cross</td><td>redirect goes past what cross covered</td><td>"beyond the scope of cross examination"</td></tr>
+      </table>
+
+      <h2 class="section-h">evidentiary objections</h2>
+
+      <h3 class="sub-h">unfair extrapolation &amp; relevance</h3>
+      <div class="callout">
+        <div class="callout-label">honest coaching note</div>
+        <p style="margin-bottom:0;">Skip both of these. "Unfair extrapolation" isn't real law and reads as a cop-out to judges who actually practice. Relevance's bar is so low that objecting just hands the other side a platform. If it comes up: "Testimony is relevant if it tends to make a fact that is important to the case more or less likely," and "opposing counsel's objection goes to weight, not admissibility."</p>
+      </div>
+
+      <h3 class="sub-h">more prejudicial than probative</h3>
+      <p><strong>say:</strong> "Creates substantial danger of undue prejudice" / "This testimony has no probative value."</p>
+
+      <h3 class="sub-h">foundation</h3>
+      <p>One of the better objections — gets sustained a lot. Before a witness testifies to a fact, you need to know they were actually in a position to know it.</p>
+      <p><strong>say:</strong> "No foundation has been laid as to how [witness] would know..."<br><strong>respond:</strong> "It's foundation, your honor" or make them say exactly what's missing.</p>
+
+      <h3 class="sub-h">lack of personal knowledge</h3>
+      <p><strong>say:</strong> "Witness has no personal knowledge of the inferred fact" / "The witness is speculating."</p>
+
+      <h3 class="sub-h">improper opinion (lay witness)</h3>
+      <p>Lay witnesses can give opinions based on common, rational perception — speed, smell, appearance, emotional state, time passing, recognizing a voice.</p>
+      <p><strong>respond:</strong> "The witness's opinion is based on their rational perception and helps the jury understand their testimony. Opinions based on common experience are admissible."</p>
+
+      <h3 class="sub-h">improper expert opinion / lack of foundation</h3>
+      <p><strong>say:</strong> "No foundation has been laid that this witness has sufficient training, skill, knowledge, or education beyond common experience."<br><strong>respond:</strong> "The witness is an expert based on their education and/or years of experience in the field of ______ and can provide an expert opinion within that expertise."</p>
+
+      <h3 class="sub-h">character evidence</h3>
+      <p>You can't use a character trait to prove "action in conformity therewith." Exception: proving a habit, or a prior act going to motive, intent, identity, or absence of mistake.</p>
+
+      <h2 class="section-h">hearsay</h2>
+      <p><strong>definition:</strong> an out-of-court statement offered to prove the truth of what it says.</p>
+
+      <h3 class="sub-h">comebacks when you're hit with a hearsay objection</h3>
+      <table>
+        <tr><th>exception</th><th>say this</th></tr>
+        <tr><td>not for the truth — subsequent actions</td><td>"Not offered for its truth, but to show this witness's subsequent actions after hearing it."</td></tr>
+        <tr><td>not for the truth — state of mind</td><td>"I'm not introducing this for its truth, just to show the declarant's state of mind."</td></tr>
+        <tr><td>party admission</td><td>"A statement by an opposing party or its agent is admissible."</td></tr>
+        <tr><td>prior inconsistent statement</td><td>"This is a prior inconsistent statement with their testimony today." (impeachment context)</td></tr>
+        <tr><td>excited utterance</td><td>"Made right after a startling event, while the witness was still under stress."</td></tr>
+        <tr><td>present sense impression</td><td>"Made while the witness was watching the event happen."</td></tr>
+        <tr><td>statement for diagnosis/treatment</td><td>"Made for medical diagnosis or treatment, relating to symptoms or history."</td></tr>
+        <tr><td>business record</td><td>"Kept in the ordinary course of business, made at or near the time of the event, and this witness is the custodian."</td></tr>
+        <tr><td>expert's underlying facts</td><td>"Under 703, hearsay relied on by an expert is admissible if experts in that field would normally rely on it."</td></tr>
+      </table>
+
+      <h2 class="section-h">getting an exhibit in (business records example)</h2>
+      <div class="callout">
+        <div class="callout-label">script</div>
+        <div class="script-block">
+          <p class="script-line">"Permission to approach opposing counsel." (granted)</p>
+          <p class="script-line">"Let the record reflect that I am showing opposing counsel what's been marked as Exhibit 1/A." (so reflected)</p>
+          <p class="script-line">"Permission to approach the witness." (granted)</p>
+          <p class="script-line">"Do you recognize this document? Is this a fair and accurate copy?"</p>
+          <p class="script-line">[business records] "Kept in the regular course of business? Made at or near the time of the event? Was this the business's regular practice? Are you the custodian of these records?"</p>
+          <p class="script-line">"Your Honor, I move that Exhibit 1/A be admitted into evidence."</p>
+        </div>
+      </div>
+
+      <h2 class="section-h">a few things worth remembering</h2>
+      <ul>
+        <li>plaintiff/prosecution exhibits get numbers, defense gets letters</li>
+        <li>only move to strike when the witness's answer is the problem — not the question</li>
+        <li>"goes to bias," "goes to credibility," "it's foundation" are good catch-all responses when you're caught off guard</li>
+      </ul>
+    </section>
+
+    <!-- IMPEACHMENT -->
+    <section class="page" id="page-impeachment">
+      <div class="page-kicker">when you're stuck</div>
+      <h1 class="page-title">Impeachment Script</h1>
+      <p class="page-subtitle">For catching a witness in a contradiction or a damaging omission. Use it sparingly — only when they're genuinely caught.</p>
+
+      <div class="callout">
+        <div class="callout-label">before you pull the trigger</div>
+        <ul style="margin-bottom:0;">
+          <li>did the testimony actually hurt you, or are you just irritated</li>
+          <li>is the contradiction clean, or are you stretching</li>
+          <li>is it actually material</li>
+          <li>do you have the affidavit page pulled up and ready</li>
+        </ul>
+      </div>
+
+      <h2 class="section-h">step one: commit</h2>
+      <p>Lock them into the testimony before you confront them with it.</p>
+      <div class="callout">
+        <div class="callout-label">say this</div>
+        <div class="script-block">
+          <p class="script-line">"So it is your testimony today that [Contradiction]?"</p>
+          <p class="script-line">or: "On direct examination you stated [Contradiction], correct?"</p>
+        </div>
+      </div>
+
+      <h2 class="section-h">step two: credit</h2>
+      <p>Establish the prior statement is reliable before you use it against them.</p>
+      <div class="callout">
+        <div class="callout-label">say this</div>
+        <div class="script-block">
+          <p class="script-line">"Do you recall making an affidavit for today's case?" (yes)</p>
+          <p class="script-line">"Your Honor, permission to approach opposing counsel." (granted)</p>
+          <p class="script-line">"Let the record reflect I'm showing opposing counsel the witness's affidavit." (so reflected)</p>
+          <p class="script-line">"Permission to approach the witness." (granted)</p>
+          <p class="script-line">"This is a fair and accurate copy of your affidavit, is it not?" (yes)</p>
+          <p class="script-line">"And that's your signature on the last page?" (yes)</p>
+          <p class="script-line">"You swore to be complete and truthful writing it, didn't you?"</p>
+          <p class="script-line">"And you could've updated it any time before today?"</p>
+        </div>
+      </div>
+
+      <h2 class="section-h">step three: confront</h2>
+      <h3 class="sub-h">direct contradiction</h3>
+      <div class="callout">
+        <div class="callout-label">say this</div>
+        <div class="script-block">
+          <p class="script-line">"Directing your attention to lines xx–yy, please read along silently as I read aloud: '[blah blah blah]'. Did I read that correctly?"</p>
+        </div>
+      </div>
+
+      <h3 class="sub-h">impeachment by omission</h3>
+      <div class="callout">
+        <div class="callout-label">say this</div>
+        <div class="script-block">
+          <p class="script-line">"Isn't it true that nowhere in your affidavit did you mention [Omission]?"</p>
+          <p>(likely answer: "didn't feel it was necessary")</p>
+          <p class="script-line">"You found it important enough to bring up today though, correct?"</p>
+        </div>
+      </div>
+
+      <div class="callout alt">
+        <div class="callout-label">don't forget</div>
+        <p style="margin-bottom:0;">If they try to explain or fight you, cut them off and demand a yes/no, or object non-responsive. Don't let them talk their way out of the contradiction once you've got them.</p>
+      </div>
+
+      <h2 class="section-h">virtual / screen-share version</h2>
+      <div class="callout">
+        <div class="callout-label">say this</div>
+        <div class="script-block">
+          <p class="script-line">"Witness, is it your testimony that...?"</p>
+          <p class="script-line">"Your Honor, permission for co-counsel to share their screen with the witness's affidavit."</p>
+          <p class="script-line">"Does this appear to be a fair and accurate copy of the first page?"</p>
+          <p class="script-line">"Directing you to page... line... read along silently while I read aloud: [Contradiction]. Those are your words, aren't they?"</p>
+        </div>
+      </div>
+
+      <h2 class="section-h">a real example: impeaching a police report</h2>
+      <div class="example-box">
+        <div class="ex-title">commit</div>
+        <p>"On direct examination you testified that my client dropped a handgun before fleeing into an alley, correct?"</p>
+        <div class="ex-title">credit</div>
+        <p>"Officer, you wrote a police report the same day, while it was fresh in your mind — fresher than now, nine months later? You made sure it was complete, accurate, and thorough? You know the DA, the judge, and this jury all rely on it being exactly that?"</p>
+        <div class="ex-title">confront</div>
+        <p style="margin-bottom:0;">"Officer, turn to page 2, second sentence of the second paragraph. Follow along silently. It states, 'The suspect ran away from me and fled towards an alley. As he was running I saw him drop a handgun onto the ground.' Did I read that correctly?"</p>
+      </div>
+
+      <h2 class="section-h">one last thing</h2>
+      <div class="callout">
+        <div class="callout-label">from people who've botched this before</div>
+        <p style="margin-bottom:0;">A clean impeachment can swing a round. A messy one can hurt you more than the original bad answer ever could. Plan it like you plan your direct — and limit yourself to two or three fights, max, in the entire trial.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+(function() {
+  var pages = [
+    { id: 'home', label: 'start here' },
+    { id: 'bailiff', label: 'Bailiff' },
+    { id: 'timeclerk', label: 'Time Clerk' },
+    { id: 'openings', label: 'Openings' },
+    { id: 'direct', label: 'Direct Exam' },
+    { id: 'cross', label: 'Cross Exam' },
+    { id: 'closings', label: 'Closings' },
+    { id: 'witness', label: 'Witness Coaching' },
+    { id: 'objections', label: 'Objections' },
+    { id: 'impeachment', label: 'Impeachment' }
+  ];
+
+  function navigate(pageId) {
+    document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+    var target = document.getElementById('page-' + pageId);
+    if (target) target.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(function(n) {
+      n.classList.toggle('active', n.getAttribute('data-page') === pageId);
+    });
+    window.scrollTo(0, 0);
+    document.getElementById('searchResults').classList.remove('show');
+    document.getElementById('searchInput').value = '';
+  }
+
+  document.querySelectorAll('.nav-item, .role-card').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var pid = el.getAttribute('data-page');
+      if (pid) navigate(pid);
+    });
+  });
+
+  var searchIndex = [];
+  pages.forEach(function(pg) {
+    var pageEl = document.getElementById('page-' + pg.id);
+    if (!pageEl) return;
+    var blocks = pageEl.querySelectorAll('h2, h3, .callout, .example-box, p, li, td');
+    var currentSection = pg.label;
+    blocks.forEach(function(b) {
+      if (b.tagName === 'H2' || b.tagName === 'H3') {
+        currentSection = b.textContent.trim();
+      }
+      var text = b.textContent.trim();
+      if (text.length > 25) {
+        searchIndex.push({
+          page: pg.id,
+          pageLabel: pg.label,
+          section: currentSection,
+          text: text
+        });
+      }
+    });
+  });
+
+  function escapeRegExp(s) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function highlightMatch(text, query) {
+    var idx = text.toLowerCase().indexOf(query.toLowerCase());
+    if (idx === -1) return text.slice(0, 90);
+    var start = Math.max(0, idx - 30);
+    var end = Math.min(text.length, idx + query.length + 60);
+    var snippet = (start > 0 ? '…' : '') + text.slice(start, end) + (end < text.length ? '…' : '');
+    var re = new RegExp(escapeRegExp(query), 'ig');
+    return snippet.replace(re, function(m) { return '<mark>' + m + '</mark>'; });
+  }
+
+  var searchInput = document.getElementById('searchInput');
+  var searchResults = document.getElementById('searchResults');
+
+  searchInput.addEventListener('input', function() {
+    var q = searchInput.value.trim();
+    if (q.length < 2) {
+      searchResults.classList.remove('show');
+      searchResults.innerHTML = '';
+      return;
+    }
+    var ql = q.toLowerCase();
+    var matches = searchIndex.filter(function(item) {
+      return item.text.toLowerCase().indexOf(ql) !== -1;
+    }).slice(0, 12);
+
+    searchResults.innerHTML = '';
+    if (matches.length === 0) {
+      var none = document.createElement('div');
+      none.className = 'search-no-results';
+      none.textContent = 'nothing found, try another word';
+      searchResults.appendChild(none);
+    } else {
+      var seen = {};
+      matches.forEach(function(m) {
+        var key = m.page + '|' + m.section;
+        if (seen[key]) return;
+        seen[key] = true;
+        var item = document.createElement('div');
+        item.className = 'search-result-item';
+        var secLabel = document.createElement('span');
+        secLabel.className = 'search-result-section';
+        secLabel.textContent = m.pageLabel + ' — ' + m.section;
+        var snippet = document.createElement('span');
+        snippet.className = 'search-result-snippet';
+        snippet.innerHTML = highlightMatch(m.text, q);
+        item.appendChild(secLabel);
+        item.appendChild(snippet);
+        item.addEventListener('click', function() {
+          navigate(m.page);
+        });
+        searchResults.appendChild(item);
+      });
+    }
+    searchResults.classList.add('show');
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+      searchResults.classList.remove('show');
+    }
+  });
+
+  navigate('home');
+})();
+</script>
+
+</body>
+</html>
