@@ -375,10 +375,166 @@
     font-style: italic;
   }
 
+  /* Need Help / Grading tools */
+  .grade-picker {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 30px 0;
+  }
+  .grade-option {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 24px 22px;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.025);
+    transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .grade-option:nth-child(1) { transform: rotate(-0.2deg); }
+  .grade-option:nth-child(2) { transform: rotate(0.2deg); }
+  .grade-option:hover {
+    box-shadow: 3px 4px 0 rgba(122,59,46,0.14);
+    transform: translateY(-1px) rotate(0deg);
+    border-color: var(--accent);
+  }
+  .grade-option-title {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .grade-option-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .grade-tool { display: none; margin-top: 10px; }
+  .grade-tool.active { display: block; }
+  .back-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-size: 12.5px;
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: 18px;
+    text-decoration: underline;
+    text-decoration-color: rgba(110,102,87,0.35);
+  }
+  .back-btn:hover { color: var(--accent); }
+  .tool-h {
+    font-family: var(--serif);
+    font-size: 21px;
+    margin: 0 0 6px;
+    color: var(--ink);
+  }
+  .tool-sub {
+    font-size: 13.5px;
+    color: var(--muted);
+    margin-bottom: 16px;
+    max-width: 560px;
+  }
+  .grade-textarea {
+    width: 100%;
+    min-height: 220px;
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--panel);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 13.5px;
+    line-height: 1.6;
+    resize: vertical;
+    margin-bottom: 14px;
+  }
+  .grade-textarea:focus { outline: none; border-color: var(--accent); }
+  .grade-textarea::placeholder { color: #a39a85; }
+  .grade-btn {
+    background: var(--accent);
+    color: #fffdf8;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 22px;
+    font-family: var(--sans);
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+  }
+  .grade-btn:hover { background: #642f25; }
+  .grade-btn:disabled { background: #b3a692; cursor: wait; }
+  .grade-btn.loading::after {
+    content: '...';
+  }
+
+  .grade-output { margin-top: 26px; }
+  .grade-output:empty { display: none; }
+  .grade-loading {
+    font-style: italic;
+    color: var(--muted);
+    font-size: 13.5px;
+    padding: 16px 0;
+  }
+  .grade-error {
+    background: #f2e6e1;
+    border: 1px solid #ddc0b6;
+    border-radius: 5px;
+    padding: 14px 16px;
+    font-size: 13.5px;
+    color: #8a4632;
+  }
+  .grade-score-banner {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    background: var(--accent-soft);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 18px 22px;
+    margin-bottom: 20px;
+  }
+  .grade-score-num {
+    font-family: var(--serif);
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .grade-score-denom {
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--muted);
+  }
+  .grade-score-summary {
+    font-size: 13.5px;
+    color: #2b2718;
+    font-style: italic;
+    flex: 1;
+  }
+  .grade-section {
+    margin-bottom: 18px;
+  }
+  .grade-section-h {
+    font-family: var(--serif);
+    font-size: 15.5px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .grade-section p, .grade-section li {
+    font-size: 14px;
+  }
+
   @media (max-width: 880px) {
     .sidebar { display: none; }
     .main { padding: 30px 22px 60px; max-width: 100%; }
-    .card-grid, .dos-donts { grid-template-columns: 1fr; }
+    .card-grid, .dos-donts, .grade-picker { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -387,6 +543,7 @@
 <div class="layout">
   <nav class="sidebar">
     <div class="brand-box">
+      <div class="brand">so you got a role</div>
       <div class="brand-sub">mock trial cheat sheet</div>
       <svg class="scribble" viewBox="0 0 130 6"><path d="M2 4 Q 30 0, 60 4 T 128 3" stroke="#7a3b2e" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
     </div>
@@ -407,7 +564,7 @@
       <a class="nav-item" data-page="timeclerk">time clerk</a>
     </div>
 
-    <div class="nav-label">tools for attorneys</div>
+    <div class="nav-label">attorney stuff</div>
     <div class="nav-group">
       <a class="nav-item" data-page="openings">openings</a>
       <a class="nav-item" data-page="direct">direct exam</a>
@@ -415,7 +572,7 @@
       <a class="nav-item" data-page="closings">closings</a>
     </div>
 
-    <div class="nav-label">tools for witnesses</div>
+    <div class="nav-label">witness stuff</div>
     <div class="nav-group">
       <a class="nav-item" data-page="witness">witness coaching</a>
     </div>
@@ -425,15 +582,21 @@
       <a class="nav-item" data-page="objections">objections</a>
       <a class="nav-item" data-page="impeachment">impeachment</a>
     </div>
+
+    <div class="nav-label">need help?</div>
+    <div class="nav-group">
+      <a class="nav-item" data-page="needhelp">grade my stuff</a>
+    </div>
   </nav>
 
   <main class="main">
 
     <!-- HOME -->
     <section class="page active" id="page-home">
-      <h1 class="page-title">The Ultimate Guide to Mock Trial</h1>
-      <p class="page-subtitle">This is the ultimate cheat sheet for the beginner to mock trial, giving you bailiff and clerk scripts, attorney techniques, witness coaching, and an objections list you can actually find things in. Pick your role below, or just search for whatever you're panicking about.</p>
-
+      <div class="page-kicker">read this first</div>
+      <h1 class="page-title">okay, so you got a role</h1>
+      <p class="page-subtitle">This is the cheat sheet our team wishes we'd had freshman year — bailiff and clerk scripts, attorney techniques, witness coaching, and an objections list you can actually find things in. Pick your role below, or just search for whatever you're panicking about.</p>
+      <p class="handnote">— compiled from years of team notes, scrimmage debriefs, and a couple of UCLA institute slides we kept coming back to</p>
 
       <h2 class="section-h">find your role</h2>
       <div class="card-grid">
@@ -443,7 +606,7 @@
         </div>
         <div class="role-card" data-page="timeclerk">
           <div class="role-card-title">Time Clerk</div>
-          <div class="role-card-desc">two stopwatches, mental math, and keeping track of the clock</div>
+          <div class="role-card-desc">two stopwatches, mental math, and never faking the clock (you will get caught)</div>
         </div>
         <div class="role-card" data-page="openings">
           <div class="role-card-title">Openings</div>
@@ -471,6 +634,7 @@
         </div>
       </div>
 
+      <div class="footer-note">made by people who have definitely forgotten the bailiff oath mid-trial before. use freely, edit freely.</div>
     </section>
 
     <!-- BAILIFF -->
@@ -1204,6 +1368,47 @@
       </div>
     </section>
 
+    <!-- NEED HELP -->
+    <section class="page" id="page-needhelp">
+      <div class="page-kicker">need help?</div>
+      <h1 class="page-title">Grade My Stuff</h1>
+      <p class="page-subtitle">Paste in what you've got and get it graded against the stuff in this guide — themes, structure, technique, delivery cues, all of it. Not a replacement for your coach, but good for a gut check at 11pm before practice.</p>
+      <p class="meta-line">this uses Claude to actually read and grade your text — give it a second to think</p>
+
+      <div class="grade-picker" id="gradePicker">
+        <div class="grade-option" data-tool="statement">
+          <div class="grade-option-title">grade my statement</div>
+          <div class="grade-option-desc">opening or closing — paste in the script, get feedback on theme, structure, delivery cues, and argument</div>
+        </div>
+        <div class="grade-option" data-tool="examination">
+          <div class="grade-option-title">grade my examination</div>
+          <div class="grade-option-desc">direct or cross — paste in your Q&amp;A, get feedback on technique, question construction, and control</div>
+        </div>
+      </div>
+
+      <!-- STATEMENT GRADER -->
+      <div class="grade-tool" id="tool-statement">
+        <button class="back-btn" data-back="needhelp">&larr; back</button>
+        <h3 class="tool-h">grade my statement</h3>
+        <p class="tool-sub">opening or closing, doesn't matter which side. paste the whole thing in, word for word, the way you'd actually deliver it.</p>
+        <textarea class="grade-textarea" id="statementInput" placeholder="Paste your opening or closing statement here..."></textarea>
+        <button class="grade-btn" id="statementSubmit">grade it</button>
+        <div class="grade-output" id="statementOutput"></div>
+      </div>
+
+      <!-- EXAMINATION GRADER -->
+      <div class="grade-tool" id="tool-examination">
+        <button class="back-btn" data-back="needhelp">&larr; back</button>
+        <h3 class="tool-h">grade my examination</h3>
+        <p class="tool-sub">direct or cross, doesn't matter which. paste your Q&amp;A script — even rough notes work, just keep the Q: / A: format if you can.</p>
+        <textarea class="grade-textarea" id="examInput" placeholder="Paste your direct or cross examination here, e.g.&#10;&#10;Q: Where were you on the night of...&#10;A: I was at..."></textarea>
+        <button class="grade-btn" id="examSubmit">grade it</button>
+        <div class="grade-output" id="examOutput"></div>
+      </div>
+
+      <div class="footer-note">grading is generated on the spot and can be wrong or miss context only your coach would catch — use it as a second opinion, not the final word</div>
+    </section>
+
   </main>
 </div>
 
@@ -1219,7 +1424,8 @@
     { id: 'closings', label: 'Closings' },
     { id: 'witness', label: 'Witness Coaching' },
     { id: 'objections', label: 'Objections' },
-    { id: 'impeachment', label: 'Impeachment' }
+    { id: 'impeachment', label: 'Impeachment' },
+    { id: 'needhelp', label: 'Need Help?' }
   ];
 
   function navigate(pageId) {
@@ -1330,6 +1536,140 @@
   });
 
   navigate('home');
+
+  // ---- Need Help / Grading tools ----
+  function showTool(toolName) {
+    document.getElementById('gradePicker').style.display = 'none';
+    document.querySelectorAll('.grade-tool').forEach(function(t) { t.classList.remove('active'); });
+    var target = document.getElementById('tool-' + toolName);
+    if (target) target.classList.add('active');
+  }
+  function hideTool() {
+    document.getElementById('gradePicker').style.display = 'grid';
+    document.querySelectorAll('.grade-tool').forEach(function(t) { t.classList.remove('active'); });
+  }
+
+  document.querySelectorAll('.grade-option').forEach(function(el) {
+    el.addEventListener('click', function() {
+      showTool(el.getAttribute('data-tool'));
+    });
+  });
+  document.querySelectorAll('.back-btn').forEach(function(el) {
+    el.addEventListener('click', hideTool);
+  });
+  // Reset the need-help view whenever its nav item is clicked fresh
+  document.querySelectorAll('[data-page="needhelp"]').forEach(function(el) {
+    el.addEventListener('click', hideTool);
+  });
+
+  var STATEMENT_PROMPT = "You are an experienced mock trial coach grading an opening or closing statement. "
+    + "Judge it against standard mock trial technique: a clear theme established early and reinforced, a logical theory of the case, "
+    + "non-argumentative storytelling (for openings) or actual argument tying evidence to law (for closings), strong and consistent labels, "
+    + "use of phrases like 'the evidence will show' (openings) vs. real argument and rhetorical devices like triplets, rhetorical questions, "
+    + "analogies (closings), a strong dramatic opening and closing line, and a clear request for a verdict at the end. "
+    + "Don't worry about which side (plaintiff/prosecution vs defense) the statement is for - grade general technique only. "
+    + "Respond ONLY with valid JSON, no markdown fences, no preamble, in this exact shape: "
+    + '{"score": <integer 1-10>, "summary": "<one sentence overall take>", "strengths": ["..."], "improvements": ["..."], "lineNotes": ["specific quoted snippet -> specific note", "..."]}. '
+    + "Keep strengths and improvements to 3-5 short bullet points each, each one sentence. lineNotes should quote a short phrase actually from their text "
+    + "and give one specific, actionable note about it - include 2-4 of these if there's material to work with.";
+
+  var EXAM_PROMPT = "You are an experienced mock trial coach grading a direct or cross examination script (Q&A format). "
+    + "First figure out if it reads more like a direct or a cross, and grade it against the right standard: "
+    + "for direct - open-ended questions, headers/transitions, looping, chronological flow, letting the witness shine, volunteering weaknesses early; "
+    + "for cross - short leading questions, one fact per question, control techniques, not asking open-ended questions, not letting the witness explain, "
+    + "sticking to 2-3 sharp points rather than overloading, starting and ending strong. "
+    + "Don't worry about which side (plaintiff/prosecution vs defense) it's for - grade general technique only. "
+    + "Respond ONLY with valid JSON, no markdown fences, no preamble, in this exact shape: "
+    + '{"score": <integer 1-10>, "examType": "direct or cross, your best guess", "summary": "<one sentence overall take>", "strengths": ["..."], "improvements": ["..."], "lineNotes": ["specific quoted snippet -> specific note", "..."]}. '
+    + "Keep strengths and improvements to 3-5 short bullet points each, each one sentence. lineNotes should quote a short phrase or question actually from their text "
+    + "and give one specific, actionable note about it - include 2-4 of these if there's material to work with.";
+
+  function renderError(outputEl, message) {
+    outputEl.innerHTML = '<div class="grade-error">' + message + '</div>';
+  }
+
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function renderGrade(outputEl, data, examType) {
+    var html = '';
+    html += '<div class="grade-score-banner">';
+    html += '<div><span class="grade-score-num">' + escapeHtml(String(data.score)) + '</span><span class="grade-score-denom">/10</span></div>';
+    html += '<div class="grade-score-summary">' + escapeHtml(data.summary || '') + (examType && data.examType ? ' <em>(read as a ' + escapeHtml(data.examType) + ')</em>' : '') + '</div>';
+    html += '</div>';
+
+    if (data.strengths && data.strengths.length) {
+      html += '<div class="grade-section"><div class="grade-section-h">what\'s working</div><ul>';
+      data.strengths.forEach(function(s) { html += '<li>' + escapeHtml(s) + '</li>'; });
+      html += '</ul></div>';
+    }
+    if (data.improvements && data.improvements.length) {
+      html += '<div class="grade-section"><div class="grade-section-h">what to fix</div><ul>';
+      data.improvements.forEach(function(s) { html += '<li>' + escapeHtml(s) + '</li>'; });
+      html += '</ul></div>';
+    }
+    if (data.lineNotes && data.lineNotes.length) {
+      html += '<div class="grade-section"><div class="grade-section-h">line by line</div><ul>';
+      data.lineNotes.forEach(function(s) { html += '<li>' + escapeHtml(s) + '</li>'; });
+      html += '</ul></div>';
+    }
+    outputEl.innerHTML = html;
+  }
+
+  function parseGradeJSON(text) {
+    var cleaned = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+    return JSON.parse(cleaned);
+  }
+
+  async function callGrader(systemPrompt, userText, btn, outputEl, examType) {
+    if (!userText.trim()) {
+      renderError(outputEl, 'paste something in first');
+      return;
+    }
+    btn.disabled = true;
+    btn.classList.add('loading');
+    var originalLabel = btn.textContent;
+    btn.textContent = 'grading';
+    outputEl.innerHTML = '<div class="grade-loading">reading through it...</div>';
+
+    try {
+      var response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-6",
+          max_tokens: 1000,
+          system: systemPrompt,
+          messages: [{ role: "user", content: userText }]
+        })
+      });
+      var data = await response.json();
+      var textBlocks = (data.content || []).filter(function(b) { return b.type === 'text'; }).map(function(b) { return b.text; });
+      var fullText = textBlocks.join('\n');
+      var parsed = parseGradeJSON(fullText);
+      renderGrade(outputEl, parsed, examType);
+    } catch (err) {
+      console.error(err);
+      renderError(outputEl, "couldn't grade that one — try again in a second");
+    } finally {
+      btn.disabled = false;
+      btn.classList.remove('loading');
+      btn.textContent = originalLabel;
+    }
+  }
+
+  document.getElementById('statementSubmit').addEventListener('click', function() {
+    var text = document.getElementById('statementInput').value;
+    callGrader(STATEMENT_PROMPT, text, this, document.getElementById('statementOutput'), false);
+  });
+
+  document.getElementById('examSubmit').addEventListener('click', function() {
+    var text = document.getElementById('examInput').value;
+    callGrader(EXAM_PROMPT, text, this, document.getElementById('examOutput'), true);
+  });
 })();
 </script>
 
